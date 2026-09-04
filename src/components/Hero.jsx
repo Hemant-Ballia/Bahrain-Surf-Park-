@@ -4,6 +4,27 @@ import WaveBarLoader from "./wave_loader";
 const TOTAL_FRAMES = 240;
 const SMOOTHING = 0.12;
 
+const translations = {
+  en: {
+    accommodation: "Accommodation",
+    days: "5 days",
+    liveGuide: "Live guide",
+    available: "available",
+    cancellation: "Easy cancellation",
+    cancelTime: "Cancel before 48 hours",
+    reserve: "Reserve Spot",
+  },
+  ar: {
+    accommodation: "الإقامة",
+    days: "٥ أيام",
+    liveGuide: "مرشد حي",
+    available: "متاح",
+    cancellation: "إلغاء سهل",
+    cancelTime: "الإلغاء قبل ٤٨ ساعة",
+    reserve: "احجز مكانك",
+  },
+};
+
 const Hero = () => {
   const heroRef = useRef(null);
   const canvasRef = useRef(null);
@@ -19,6 +40,23 @@ const Hero = () => {
   const [loadedCount, setLoadedCount] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [isArabic, setIsArabic] = useState(() => {
+    return localStorage.getItem("app_lang") === "ar";
+  });
+
+  // Listen to language change event dispatched from Navbar
+  useEffect(() => {
+    const handleLangChange = (e) => {
+      setIsArabic(e.detail.isArabic);
+    };
+
+    window.addEventListener("languageChange", handleLangChange);
+    return () => {
+      window.removeEventListener("languageChange", handleLangChange);
+    };
+  }, []);
+
+  const t = translations[isArabic ? "ar" : "en"];
 
   // ==============================
   // PRELOAD ALL FRAMES
@@ -107,7 +145,6 @@ const Hero = () => {
 
     let image = frames[index];
 
-    // Find nearest loaded frame
     if (
       !image ||
       !image.complete ||
@@ -173,7 +210,6 @@ const Hero = () => {
     const imageWidth = image.naturalWidth;
     const imageHeight = image.naturalHeight;
 
-    // Cover image
     const scale = Math.max(
       width / imageWidth,
       height / imageHeight
@@ -345,11 +381,6 @@ const Hero = () => {
               <code className="mt-3 inline-block rounded bg-gray-100 px-4 py-2 text-sm text-gray-700">
                 public/frames/
               </code>
-
-              <p className="mt-3 text-sm leading-6 text-gray-500">
-                Please verify the frame file names
-                and try again.
-              </p>
             </div>
           </div>
         )}
@@ -360,43 +391,49 @@ const Hero = () => {
           className="absolute inset-0 block h-full w-full"
         />
 
-{/* GEMINI LOGO BLUR COVER (Shifted further left to completely cover the star) */}
-<div className="absolute bottom-10 right-20 z-10 h-24 w-28 rounded-2xl bg-black/15 backdrop-blur-md pointer-events-none" />
+        {/* BLUR COVER (Restored to hide watermark/star) */}
+        <div className="absolute bottom-10 right-20 z-10 h-24 w-28 rounded-2xl bg-black/15 backdrop-blur-md pointer-events-none" />
 
         {/* BOTTOM BOOKING BAR */}
         <div
           className="
             absolute
-            bottom-6
+            bottom-4
+            sm:bottom-6
             left-1/2
             z-30
             flex
+            w-[92%]
+            sm:w-auto
             max-w-[95%]
             -translate-x-1/2
             items-center
-            gap-5
-            rounded-t-lg
+            justify-between
+            sm:justify-start
+            gap-3
+            sm:gap-5
+            rounded-xl
             border
             border-white/20
             bg-white/10
-            px-5
-            py-4
+            px-4
+            py-3
+            sm:px-5
+            sm:py-4
             text-white
             shadow-[0_4px_30px_rgba(0,0,0,0.1)]
             backdrop-blur-[20px]
           "
         >
           {/* ACCOMMODATION */}
-          <div className="flex items-center gap-3">
-            <i className="fa-solid fa-house text-xl" />
-
+          <div className="flex items-center gap-2 sm:gap-3">
+            <i className="fa-solid fa-house text-lg sm:text-xl" />
             <div>
-              <p className="font-bold text-sm sm:text-base">
-                Accommodation
+              <p className="font-bold text-xs sm:text-base">
+                {t.accommodation}
               </p>
-
-              <small className="text-xs text-gray-200 sm:text-sm">
-                5 days
+              <small className="text-[10px] text-gray-200 sm:text-sm">
+                {t.days}
               </small>
             </div>
           </div>
@@ -406,14 +443,12 @@ const Hero = () => {
           {/* LIVE GUIDE */}
           <div className="hidden items-center gap-3 sm:flex">
             <i className="fa-solid fa-headphones text-xl" />
-
             <div>
               <p className="font-bold text-sm sm:text-base">
-                Live guide
+                {t.liveGuide}
               </p>
-
               <small className="text-xs text-gray-200 sm:text-sm">
-                available
+                {t.available}
               </small>
             </div>
           </div>
@@ -423,14 +458,12 @@ const Hero = () => {
           {/* CANCELLATION */}
           <div className="hidden items-center gap-3 md:flex">
             <i className="fa-solid fa-clock text-xl" />
-
             <div>
               <p className="font-bold text-sm sm:text-base">
-                Easy cancellation
+                {t.cancellation}
               </p>
-
               <small className="text-xs text-gray-200 sm:text-sm">
-                cancel before 48 hours
+                {t.cancelTime}
               </small>
             </div>
           </div>
@@ -445,10 +478,12 @@ const Hero = () => {
               border-0
               bg-[linear-gradient(45deg,#ff512f_0%,#f09819_51%,#ff512f_100%)]
               bg-[length:200%_auto]
-              px-4
-              py-3
+              px-3
+              py-2
+              sm:px-4
+              sm:py-3
               text-center
-              text-xs
+              text-[11px]
               font-bold
               uppercase
               text-white
@@ -460,7 +495,7 @@ const Hero = () => {
               sm:text-sm
             "
           >
-            Reserve Spot
+            {t.reserve}
           </button>
         </div>
       </div>

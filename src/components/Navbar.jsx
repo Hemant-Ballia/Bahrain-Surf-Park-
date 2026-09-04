@@ -54,28 +54,30 @@ export default function Navbar() {
   return (
     <>
       <header className="absolute top-0 left-0 z-50 w-full bg-gradient-to-b from-black/60 via-black/20 to-transparent">
-        <div className="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
+        {/* Adjusted padding and height for better mobile responsiveness */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 md:h-28 flex items-center justify-between">
           <a href="#home" className="flex items-center" aria-label="Bahrain Surf Park Home">
             <img
               src="/Bahrain-Surf-Park-Logo-removebg-preview.png"
               alt="Bahrain Surf Park Logo"
-              className="h-20 md:h-24 w-auto object-contain drop-shadow-md"
+              className="h-14 sm:h-16 md:h-24 w-auto object-contain drop-shadow-md"
             />
           </a>
 
-          <div className="flex items-center gap-6">
+          {/* Reduced gap slightly on mobile to prevent crowding */}
+          <div className="flex items-center gap-3 sm:gap-6">
             <button
               type="button"
               onClick={toggleLanguage}
               aria-label="Toggle language between English and Arabic"
-              className="text-sm font-semibold text-white drop-shadow hover:text-[#00E599] transition-colors cursor-pointer"
+              className="text-xs sm:text-sm font-semibold text-white drop-shadow hover:text-[#00E599] transition-colors cursor-pointer"
             >
               {isArabic ? "EN | English" : "AR | العربية"}
             </button>
 
             <button
               onClick={handleOpenModal}
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-[#00E599] text-[#0077B6] font-bold text-sm shadow-md hover:opacity-95 transition-opacity"
+              className="inline-flex items-center justify-center px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-full bg-[#00E599] text-[#0077B6] font-bold text-xs sm:text-sm shadow-md hover:opacity-95 transition-opacity"
             >
               Book Now
             </button>
