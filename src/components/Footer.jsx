@@ -26,7 +26,8 @@ const Footer = () => {
     <div className="font-outfit">
       <footer
         ref={footerRef}
-        className="relative bg-[#004658] text-white"
+        // Background updated to dark navy blue
+        className="relative bg-[#112E44] text-white"
       >
         {/* Top Wave */}
         <div className="pointer-events-none absolute left-0 top-0 z-10 h-[30px] w-full -translate-y-full md:h-[50px]">
@@ -37,7 +38,8 @@ const Footer = () => {
             preserveAspectRatio="none"
           >
             <path
-              className="fill-[#004658]"
+              // SVG path fill updated to match the footer background
+              className="fill-[#112E44]"
               d="M851.8,100c125,0,288.3-45,348.2-64V0H0v44c3.7-1,7.3-1.9,11-2.9C80.7,22,151.7,10.8,223.5,6.3C276.7,2.9,330,4,383,9.8c52.2,5.7,103.3,16.2,153.4,32.8C623.9,71.3,726.8,100,851.8,100z"
             />
           </svg>
@@ -91,7 +93,7 @@ const Footer = () => {
 
               <a
                 href="#booking"
-                className="mt-5 inline-flex items-center justify-center rounded-[21px] bg-[#00E599] px-[30px] py-[12px] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-900 transition-all duration-300 hover:-translate-y-1 hover:bg-[#fffff2] hover:text-[#004658]"
+                className="mt-5 inline-flex items-center justify-center rounded-[21px] bg-[#00E599] px-[30px] py-[12px] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-900 transition-all duration-300 hover:-translate-y-1 hover:bg-[#fffff2] hover:text-[#112E44]"
               >
                 Book Now
               </a>
@@ -199,7 +201,8 @@ const Footer = () => {
 
                 <a
                   href="#"
-                  className="inline-block rounded-[21px] bg-[#027b9a] px-[30px] py-[12px] text-[11px] font-bold uppercase tracking-[0.1em] text-[#fffff2] transition-colors hover:bg-[#fffff2] hover:text-[#00bef0]"
+                  // Updated button background to a slightly lighter shade of the main bg for contrast
+                  className="inline-block rounded-[21px] bg-[#1a3f5a] px-[30px] py-[12px] text-[11px] font-bold uppercase tracking-[0.1em] text-[#fffff2] transition-colors hover:bg-[#fffff2] hover:text-[#00bef0]"
                 >
                   Get in Touch
                 </a>
@@ -222,12 +225,12 @@ const Footer = () => {
 
           {/* Social Icons */}
           <div className="flex items-center gap-3 md:absolute md:bottom-3 md:right-4">
-
             {/* LinkedIn */}
             <a
               href="#"
               aria-label="LinkedIn"
-              className="rounded-full bg-[#027b9a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
+              // Updated social icon backgrounds
+              className="rounded-full bg-[#1a3f5a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
             >
               <svg
                 className="h-[18px] w-[18px] fill-[#fffff2]"
@@ -241,7 +244,7 @@ const Footer = () => {
             <a
               href="#"
               aria-label="Twitter"
-              className="rounded-full bg-[#027b9a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
+              className="rounded-full bg-[#1a3f5a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
             >
               <svg
                 className="h-[18px] w-[18px] fill-[#fffff2]"
@@ -255,7 +258,7 @@ const Footer = () => {
             <a
               href="#"
               aria-label="YouTube"
-              className="rounded-full bg-[#027b9a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
+              className="rounded-full bg-[#1a3f5a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
             >
               <svg
                 className="h-[18px] w-[18px] fill-[#fffff2]"
@@ -269,7 +272,7 @@ const Footer = () => {
             <a
               href="#"
               aria-label="Instagram"
-              className="rounded-full bg-[#027b9a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
+              className="rounded-full bg-[#1a3f5a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
             >
               <svg
                 className="h-[18px] w-[18px] fill-[#fffff2]"
@@ -283,7 +286,7 @@ const Footer = () => {
             <a
               href="#"
               aria-label="Facebook"
-              className="rounded-full bg-[#027b9a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
+              className="rounded-full bg-[#1a3f5a] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-[#00bef0]"
             >
               <svg
                 className="h-[18px] w-[18px] fill-[#fffff2]"
@@ -296,7 +299,7 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="w-full bg-[#027b9a] px-[20px] py-[13px] text-center text-white">
+        <div className="w-full bg-[#0d2334] px-[20px] py-[13px] text-center text-white">
           <div className="mx-auto max-w-[1200px]">
             <p className="m-0 text-[13px] font-light leading-[18px]">
               © {new Date().getFullYear()} Bahrain Surf Park. | All rights reserved.

@@ -2,14 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import WaveBarLoader from "./wave_loader";
 
 const TOTAL_FRAMES = 240;
-const SMOOTHING = 0.14;
+const SMOOTHING = 0.12;
 
 const Hero = () => {
   const heroRef = useRef(null);
   const canvasRef = useRef(null);
+
   const framesRef = useRef([]);
   const currentFrameRef = useRef(0);
   const targetFrameRef = useRef(0);
+
   const rafRef = useRef(null);
   const scrollRafRef = useRef(null);
   const lastDrawnFrameRef = useRef(-1);
@@ -18,9 +20,9 @@ const Hero = () => {
   const [loaded, setLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
 
-  // --------------------------------------------------
+  // ==============================
   // PRELOAD ALL FRAMES
-  // --------------------------------------------------
+  // ==============================
   useEffect(() => {
     let mounted = true;
 
@@ -29,6 +31,21 @@ const Hero = () => {
 
     let completed = 0;
     let errors = 0;
+
+    const finishLoading = () => {
+      if (!mounted) return;
+
+      completed += 1;
+      setLoadedCount(completed);
+
+      if (completed === TOTAL_FRAMES) {
+        if (errors === TOTAL_FRAMES) {
+          setLoadError(true);
+        } else {
+          setLoaded(true);
+        }
+      }
+    };
 
     const loadFrame = (index) => {
       const img = new Image();
@@ -41,45 +58,25 @@ const Hero = () => {
           if (img.decode) {
             await img.decode();
           }
-        } catch {
-          // Image is still usable if decoding throws
+        } catch (error) {
+          // Image is still usable if decode fails
         }
 
         if (!mounted) return;
 
         images[index] = img;
-        completed++;
-
-        setLoadedCount(completed);
-
-        if (completed === TOTAL_FRAMES) {
-          if (errors === TOTAL_FRAMES) {
-            setLoadError(true);
-          } else {
-            setLoaded(true);
-          }
-        }
+        finishLoading();
       };
 
       img.onerror = () => {
         if (!mounted) return;
 
-        errors++;
-        completed++;
-
-        setLoadedCount(completed);
-
-        if (completed === TOTAL_FRAMES) {
-          if (errors === TOTAL_FRAMES) {
-            setLoadError(true);
-          } else {
-            setLoaded(true);
-          }
-        }
+        errors += 1;
+        finishLoading();
       };
     };
 
-    for (let i = 0; i < TOTAL_FRAMES; i++) {
+    for (let i = 0; i < TOTAL_FRAMES; i += 1) {
       loadFrame(i);
     }
 
@@ -88,9 +85,9 @@ const Hero = () => {
     };
   }, []);
 
-  // --------------------------------------------------
+  // ==============================
   // DRAW FRAME
-  // --------------------------------------------------
+  // ==============================
   const drawFrame = (frameIndex, force = false) => {
     const canvas = canvasRef.current;
     const frames = framesRef.current;
@@ -104,27 +101,19 @@ const Hero = () => {
       Math.min(TOTAL_FRAMES - 1, index)
     );
 
-    // Avoid unnecessary redraws
-    if (
-      !force &&
-      index === lastDrawnFrameRef.current
-    ) {
+    if (!force && index === lastDrawnFrameRef.current) {
       return;
     }
 
     let image = frames[index];
 
-    // Find nearest available frame
+    // Find nearest loaded frame
     if (
       !image ||
       !image.complete ||
       image.naturalWidth === 0
     ) {
-      for (
-        let offset = 1;
-        offset < TOTAL_FRAMES;
-        offset++
-      ) {
+      for (let offset = 1; offset < TOTAL_FRAMES; offset += 1) {
         const previous = index - offset;
         const next = index + offset;
 
@@ -163,11 +152,7 @@ const Hero = () => {
 
     if (!width || !height) return;
 
-    // Limit DPR to reduce rendering load
-    const dpr = Math.min(
-      window.devicePixelRatio || 1,
-      2
-    );
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     const canvasWidth = Math.round(width * dpr);
     const canvasHeight = Math.round(height * dpr);
@@ -180,22 +165,15 @@ const Hero = () => {
       canvas.height = canvasHeight;
     }
 
-    ctx.setTransform(
-      dpr,
-      0,
-      0,
-      dpr,
-      0,
-      0
-    );
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    // Cover image
     const imageWidth = image.naturalWidth;
     const imageHeight = image.naturalHeight;
 
+    // Cover image
     const scale = Math.max(
       width / imageWidth,
       height / imageHeight
@@ -207,12 +185,7 @@ const Hero = () => {
     const x = (width - drawWidth) / 2;
     const y = (height - drawHeight) / 2;
 
-    ctx.clearRect(
-      0,
-      0,
-      width,
-      height
-    );
+    ctx.clearRect(0, 0, width, height);
 
     ctx.drawImage(
       image,
@@ -225,9 +198,9 @@ const Hero = () => {
     lastDrawnFrameRef.current = index;
   };
 
-  // --------------------------------------------------
-  // SMOOTH FRAME ANIMATION
-  // --------------------------------------------------
+  // ==============================
+  // SMOOTH ANIMATION
+  // ==============================
   useEffect(() => {
     if (!loaded) return;
 
@@ -239,29 +212,22 @@ const Hero = () => {
 
       const difference = target - current;
 
-      if (Math.abs(difference) > 0.01) {
+      if (Math.abs(difference) > 0.001) {
         currentFrameRef.current =
           current + difference * SMOOTHING;
 
-        drawFrame(
-          currentFrameRef.current
-        );
+        drawFrame(currentFrameRef.current);
       } else {
         currentFrameRef.current = target;
 
-        drawFrame(
-          target
-        );
+        drawFrame(target);
       }
 
-      rafRef.current =
-        requestAnimationFrame(animate);
+      rafRef.current = requestAnimationFrame(animate);
     };
 
-    rafRef.current =
-      requestAnimationFrame(animate);
+    rafRef.current = requestAnimationFrame(animate);
 
-    // Resize
     const handleResize = () => {
       lastDrawnFrameRef.current = -1;
 
@@ -271,16 +237,11 @@ const Hero = () => {
       );
     };
 
-    window.addEventListener(
-      "resize",
-      handleResize
-    );
+    window.addEventListener("resize", handleResize);
 
     return () => {
       if (rafRef.current) {
-        cancelAnimationFrame(
-          rafRef.current
-        );
+        cancelAnimationFrame(rafRef.current);
       }
 
       window.removeEventListener(
@@ -290,9 +251,9 @@ const Hero = () => {
     };
   }, [loaded]);
 
-  // --------------------------------------------------
+  // ==============================
   // SCROLL HANDLING
-  // --------------------------------------------------
+  // ==============================
   useEffect(() => {
     if (!loaded) return;
 
@@ -303,12 +264,10 @@ const Hero = () => {
 
       if (!hero) return;
 
-      const rect =
-        hero.getBoundingClientRect();
+      const rect = hero.getBoundingClientRect();
 
       const scrollDistance =
-        hero.offsetHeight -
-        window.innerHeight;
+        hero.offsetHeight - window.innerHeight;
 
       if (scrollDistance <= 0) return;
 
@@ -327,18 +286,14 @@ const Hero = () => {
     const handleScroll = () => {
       if (scrollRafRef.current === null) {
         scrollRafRef.current =
-          requestAnimationFrame(
-            updateScroll
-          );
+          requestAnimationFrame(updateScroll);
       }
     };
 
     window.addEventListener(
       "scroll",
       handleScroll,
-      {
-        passive: true,
-      }
+      { passive: true }
     );
 
     updateScroll();
@@ -357,35 +312,26 @@ const Hero = () => {
     };
   }, [loaded]);
 
-  // --------------------------------------------------
-  // LOADING PROGRESS
-  // --------------------------------------------------
   const progress = Math.round(
     (loadedCount / TOTAL_FRAMES) * 100
   );
 
-  // --------------------------------------------------
-  // HERO
-  // --------------------------------------------------
   return (
     <section
       ref={heroRef}
       className="relative h-[600vh] w-full bg-white"
     >
-      <div className="sticky top-0 z-25 h-screen w-full overflow-hidden bg-white">
+      <div className="sticky top-0 z-20 h-screen w-full overflow-hidden bg-white">
 
         {/* LOADER */}
         {!loaded && !loadError && (
-          <WaveBarLoader
-            progress={progress}
-          />
+          <WaveBarLoader progress={progress} />
         )}
 
-        {/* FORMAL ERROR MESSAGE */}
+        {/* ERROR */}
         {loadError && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-white px-6 text-center">
             <div className="max-w-md">
-
               <h2 className="text-lg font-semibold text-gray-800">
                 Unable to Load Animation
               </h2>
@@ -393,8 +339,7 @@ const Hero = () => {
               <p className="mt-2 text-sm leading-6 text-gray-600">
                 We were unable to load the required
                 animation frames. Please ensure that
-                all frame files are available in the
-                following directory:
+                all frame files are available in:
               </p>
 
               <code className="mt-3 inline-block rounded bg-gray-100 px-4 py-2 text-sm text-gray-700">
@@ -405,7 +350,6 @@ const Hero = () => {
                 Please verify the frame file names
                 and try again.
               </p>
-
             </div>
           </div>
         )}
@@ -416,6 +360,109 @@ const Hero = () => {
           className="absolute inset-0 block h-full w-full"
         />
 
+{/* GEMINI LOGO BLUR COVER (Shifted further left to completely cover the star) */}
+<div className="absolute bottom-10 right-20 z-10 h-24 w-28 rounded-2xl bg-black/15 backdrop-blur-md pointer-events-none" />
+
+        {/* BOTTOM BOOKING BAR */}
+        <div
+          className="
+            absolute
+            bottom-6
+            left-1/2
+            z-30
+            flex
+            max-w-[95%]
+            -translate-x-1/2
+            items-center
+            gap-5
+            rounded-t-lg
+            border
+            border-white/20
+            bg-white/10
+            px-5
+            py-4
+            text-white
+            shadow-[0_4px_30px_rgba(0,0,0,0.1)]
+            backdrop-blur-[20px]
+          "
+        >
+          {/* ACCOMMODATION */}
+          <div className="flex items-center gap-3">
+            <i className="fa-solid fa-house text-xl" />
+
+            <div>
+              <p className="font-bold text-sm sm:text-base">
+                Accommodation
+              </p>
+
+              <small className="text-xs text-gray-200 sm:text-sm">
+                5 days
+              </small>
+            </div>
+          </div>
+
+          <hr className="hidden h-8 w-px border-0 bg-white/20 sm:block" />
+
+          {/* LIVE GUIDE */}
+          <div className="hidden items-center gap-3 sm:flex">
+            <i className="fa-solid fa-headphones text-xl" />
+
+            <div>
+              <p className="font-bold text-sm sm:text-base">
+                Live guide
+              </p>
+
+              <small className="text-xs text-gray-200 sm:text-sm">
+                available
+              </small>
+            </div>
+          </div>
+
+          <hr className="hidden h-8 w-px border-0 sm:block bg-white/20" />
+
+          {/* CANCELLATION */}
+          <div className="hidden items-center gap-3 md:flex">
+            <i className="fa-solid fa-clock text-xl" />
+
+            <div>
+              <p className="font-bold text-sm sm:text-base">
+                Easy cancellation
+              </p>
+
+              <small className="text-xs text-gray-200 sm:text-sm">
+                cancel before 48 hours
+              </small>
+            </div>
+          </div>
+
+          {/* RESERVE SPOT ACTION */}
+          <button
+            type="button"
+            className="
+              cursor-pointer
+              select-none
+              rounded-[10px]
+              border-0
+              bg-[linear-gradient(45deg,#ff512f_0%,#f09819_51%,#ff512f_100%)]
+              bg-[length:200%_auto]
+              px-4
+              py-3
+              text-center
+              text-xs
+              font-bold
+              uppercase
+              text-white
+              shadow-[0px_0px_14px_-7px_#f09819]
+              transition-all
+              duration-500
+              hover:bg-right
+              active:scale-95
+              sm:text-sm
+            "
+          >
+            Reserve Spot
+          </button>
+        </div>
       </div>
     </section>
   );

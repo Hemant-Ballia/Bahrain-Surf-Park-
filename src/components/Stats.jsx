@@ -22,7 +22,7 @@ const stats = [
 
 const Stats = () => {
   return (
-    <section className="bg-[#004658] py-24 px-5 sm:px-8 font-outfit overflow-hidden">
+    <section className="bg-white py-24 px-5 sm:px-8 font-outfit overflow-hidden">
       <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8 md:gap-12 text-center">
         {stats.map((stat, index) => (
           <motion.div
@@ -40,8 +40,7 @@ const Stats = () => {
               y: -5,
               transition: { duration: 0.3 } 
             }}
-            whileTap={{ scale: 0.98 }}
-            className="p-8 rounded-2xl bg-[#027b9a]/20 border border-white/10 backdrop-blur-md shadow-xl hover:bg-[#027b9a]/30 hover:border-white/20 transition-colors cursor-pointer flex flex-col items-center"
+            className="p-8 rounded-2xl bg-white border border-gray-100 shadow-lg hover:shadow-xl hover:border-gray-200 transition-all cursor-pointer flex flex-col items-center"
           >
             {stat.icon}
             
@@ -55,7 +54,7 @@ const Stats = () => {
               {stat.number}
             </motion.h3>
 
-            <p className="text-[#fffff2]/80 uppercase tracking-[0.2em] text-sm mt-4 font-light">
+            <p className="text-gray-500 uppercase tracking-[0.2em] text-sm mt-4 font-medium">
               {stat.label}
             </p>
           </motion.div>

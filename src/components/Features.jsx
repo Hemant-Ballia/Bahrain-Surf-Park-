@@ -26,12 +26,12 @@ const services = [
 
 export default function ServicesSection() {
   return (
-    <section className="relative bg-[#0C3B58] py-32 overflow-hidden">
+    <section className="relative bg-white py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 mb-24 text-center">
-        <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#00E599]">
+        <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#0077B6]">
           What We're Offering
         </span>
-        <h2 className="text-3xl md:text-5xl font-bold text-white mt-3">
+        <h2 className="text-3xl md:text-5xl font-bold text-[#0077B6] mt-3">
           World-Class Surf Experiences
         </h2>
       </div>
@@ -56,15 +56,15 @@ export default function ServicesSection() {
                 className={`lg:col-span-6 flex flex-col justify-center ${isEven ? "" : "lg:col-start-7"}`}
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="h-px w-8 bg-[#00E599]" />
-                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E599]">
+                  <span className="h-px w-8 bg-[#0077B6]" />
+                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#0077B6]">
                     0{index + 1}
                   </span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
+                <h3 className="text-3xl md:text-4xl font-bold text-[#0077B6] mb-4 leading-tight">
                   {service.title}
                 </h3>
-                <p className="text-gray-300 text-base md:text-lg leading-relaxed">
+                <p className="text-[#475569] text-base md:text-lg leading-relaxed">
                   {service.description}
                 </p>
               </motion.div>
@@ -75,7 +75,7 @@ export default function ServicesSection() {
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-                className={`lg:col-span-6 relative overflow-hidden rounded-3xl shadow-2xl h-[380px] md:h-[450px] bg-[#061f30] border border-white/10 ${
+                className={`lg:col-span-6 relative overflow-hidden rounded-3xl shadow-2xl h-[380px] md:h-[450px] bg-slate-100 border border-slate-200 ${
                   isEven ? "" : "lg:col-start-1"
                 }`}
               >
@@ -83,9 +83,10 @@ export default function ServicesSection() {
                   src={service.image}
                   alt={service.title}
                   className="w-full h-full object-cover select-none"
+                  loading="lazy"
                   draggable="false"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#061f30]/40 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
               </motion.div>
             </div>
           );

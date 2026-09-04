@@ -1,232 +1,70 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
-import {
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-} from "motion/react";
-
-import { ReactLenis } from "lenis/react";
-
-const steps = [
-  {
-    title: "Learn",
-    label: "THE BEGINNING",
-    image: "/images/f1.jpg",
-  },
-  {
-    title: "Ride",
-    label: "FIND YOUR FLOW",
-    image: "/images/f2.png",
-  },
-  {
-    title: "Master",
-    label: "OWN THE WAVE",
-    image: "/images/f3.png",
-  },
-  {
-    title: "Conquer",
-    label: "BEYOND LIMITS",
-    image: "/images/f4.png",
-  },
+const imgURLs = [
+  "https://www.brunottisurfcamps.com/wp-content/uploads/beginner-surfing-mistakes-Brunotti-Surfcamps.jpg",
+  "https://surfexpedition.com/wp-content/uploads/2023/06/longboard-surfing-tips-for-beginners.jpg",
+  "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/06/71/16/1e.jpg",
+  "https://surfstrengthcoach.com/wp-content/uploads/2013/09/dynamic-surfing-stretches.jpg",
+  "https://tse2.mm.bing.net/th/id/OIP.W0P28JFJYrQuNirjzztOIQHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
 ];
 
 const SurfJourney = () => {
-  const sectionRef = useRef(null);
-  const [activeStep, setActiveStep] = useState(0);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
-  const x = useTransform(
-    scrollYProgress,
-    [0, 0.283, 0.566, 0.85, 1],
-    ["0%", "-25%", "-50%", "-75%", "-75%"]
-  );
-
-  const headingX = useTransform(
-    scrollYProgress,
-    [0, 0.85, 1],
-    ["0px", "-100px", "-100px"]
-  );
-
-  useMotionValueEvent(scrollYProgress, "change", (progress) => {
-    const normalizedProgress = Math.min(
-      Math.max(progress / 0.85, 0),
-      0.999999
-    );
-
-    const index = Math.min(
-      Math.floor(normalizedProgress * steps.length),
-      steps.length - 1
-    );
-
-    setActiveStep(index);
-  });
+  const cardsRef = useRef(null);
 
   useEffect(() => {
-    setActiveStep(0);
+    const container = cardsRef.current;
+    if (!container) return;
+
+    const handleWheel = (e) => {
+      e.preventDefault();
+      container.scrollLeft += e.deltaY;
+    };
+
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener("wheel", handleWheel);
+    };
   }, []);
 
+  const repeatedItems = [...imgURLs, ...imgURLs];
+
   return (
-    <ReactLenis root>
-      <section
-        ref={sectionRef}
-        id="journey"
-        className="relative z-40 h-[400vh] bg-[#0C3B58]"
-      >
-        <div className="sticky top-0 h-screen w-full overflow-hidden">
-          {/* TOP HEADER */}
-          <div className="pointer-events-none absolute left-0 right-0 top-0 z-30 flex items-center px-5 py-6 text-white sm:px-10 sm:py-7 lg:px-14">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <span className="h-px w-7 bg-[#18C7A5] sm:w-10" />
+    <div className="font-sans pt-[3rem] px-[1rem] bg-[#0C3B58] min-h-screen text-white">
+      <section className="px-3 sm:px-12 mb-8">
+        <h1 className="text-3xl font-bold mb-4 text-white">Surf Journey Progression</h1>
+        <p className="max-w-4xl text-slate-300 text-sm sm:text-base leading-relaxed">
+          Discover your ultimate wave progression at Bilaj Al Jazayer, Bahrain's premier coastal destination. Designed for all skill levels from absolute beginners to elite professionals, our advanced wave generation technology and expert coaching guide you through every phase of your surfing journey. Master your technique, build unstoppable confidence, and experience the thrill of endless waves in a world-class resort environment.
+        </p>
+      </section>
 
-              <span className="text-[9px] font-semibold uppercase tracking-[0.3em] text-[#18C7A5] sm:text-[10px] sm:tracking-[0.4em]">
-                Your Journey
-              </span>
-            </div>
-          </div>
+      <section className="px-3 sm:px-12 pb-12">
+        <div
+          ref={cardsRef}
+          className="flex gap-6 overflow-x-auto py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        >
+          {repeatedItems.map((item, index) => {
+            let marginClass = "";
+            if (index === 0) marginClass = "ml-8";
+            if (index === repeatedItems.length - 1) marginClass = "mr-8";
 
-          {/* HORIZONTAL SLIDES */}
-          <motion.ul
-            style={{ x }}
-            className="m-0 flex h-screen w-[400vw] list-none p-0 will-change-transform"
-          >
-            {steps.map((step, index) => (
-              <li
-                key={step.title}
-                className="journey-slide relative h-screen w-screen shrink-0 overflow-hidden"
+            return (
+              <div
+                key={index}
+                className={`flex-[0_0_auto] w-[300px] rounded-[10px] overflow-hidden my-4 relative transition-all duration-300 hover:shadow-[rgba(0,0,0,0.15)_1.95px_1.95px_2.6px] hover:-translate-y-1.5 hover:translate-x-[-2px] ${marginClass}`}
               >
-                {/* Background */}
-                <div className="absolute inset-0 bg-[#0C3B58]" />
-
-                {/* IMAGE */}
-                <div className="absolute inset-0">
-                  <img
-                    src={step.image}
-                    alt={step.title}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    draggable="false"
-                    className="
-                      h-full
-                      w-full
-                      object-cover
-                      object-center
-                      max-[480px]:object-center
-                    "
-                    style={{
-                      objectPosition:
-                        index === 0 ? "center 20%" : "center center",
-                    }}
-                  />
-
-                  {/* Blue Overlay */}
-                  <div className="absolute inset-0 bg-[#0C3B58]/35" />
-
-                  {/* Bottom Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#061f30] via-transparent to-[#0C3B58]/20" />
-                </div>
-
-                {/* MAIN CONTENT */}
-                <div className="relative z-20 flex h-full w-full items-end px-5 pb-14 sm:px-10 sm:pb-20 lg:px-16 lg:pb-24">
-                  <div className="mx-auto w-full max-w-7xl">
-                    <div className="max-w-5xl">
-                      {/* Label */}
-                      <div className="mb-5 flex items-center gap-3 sm:mb-6 sm:gap-4">
-                        <span className="h-px w-7 bg-[#18C7A5] sm:w-10" />
-
-                        <span className="text-[8px] uppercase tracking-[0.3em] text-white/60 sm:text-[9px] sm:tracking-[0.35em]">
-                          {step.label}
-                        </span>
-                      </div>
-
-                      {/* Heading */}
-                      <motion.h2
-                        style={{ x: headingX }}
-                        className="
-                          journey-heading
-                          whitespace-nowrap
-                          text-[25vw]
-                          font-semibold
-                          leading-[0.75]
-                          tracking-[-0.07em]
-                          text-white
-
-                          sm:text-[22vw]
-
-                          md:text-[20vw]
-
-                          lg:text-[18vw]
-                        "
-                      >
-                        {step.title}
-                      </motion.h2>
-                    </div>
-                  </div>
-                </div>
-
-                {/* CORNER DECORATION */}
-                <div
-                  className="
-                    absolute
-                    bottom-0
-                    right-0
-                    z-20
-                    h-20
-                    w-20
-                    rounded-tl-[100%]
-                    border-l
-                    border-t
-                    border-white/10
-
-                    sm:h-32
-                    sm:w-32
-
-                    lg:h-40
-                    lg:w-40
-                  "
+                <img
+                  src={item}
+                  alt={`Surf Journey step ${index + 1}`}
+                  className="w-full h-auto object-cover aspect-[3/4] align-middle"
+                  loading="lazy"
+                  draggable="false"
                 />
-              </li>
-            ))}
-          </motion.ul>
-
-          {/* BOTTOM INDICATORS */}
-          <div className="absolute bottom-6 left-5 z-30 flex items-center gap-2 sm:bottom-7 sm:left-10 sm:gap-3 lg:left-14">
-            {steps.map((step, index) => {
-              const isActive = activeStep === index;
-
-              return (
-                <div
-                  key={step.title}
-                  className="flex items-center gap-2"
-                >
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full transition-all duration-300 sm:h-2 sm:w-2 ${
-                      isActive
-                        ? "scale-125 bg-[#18C7A5]"
-                        : "bg-white/40"
-                    }`}
-                  />
-
-                  {index !== steps.length - 1 && (
-                    <span
-                      className={`h-px transition-all duration-300 ${
-                        isActive
-                          ? "w-7 bg-[#18C7A5] sm:w-8"
-                          : "w-4 bg-white/20 sm:w-5"
-                      }`}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
       </section>
-    </ReactLenis>
+    </div>
   );
 };
 

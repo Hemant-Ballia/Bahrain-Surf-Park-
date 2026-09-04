@@ -108,81 +108,41 @@ const Gallery = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Frame based approach (Event independent and extremely smooth)
   useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const container = containerRef.current;
+    let animationFrameId;
 
-    if (!wrapper || !container) return;
+    const syncScroll = () => {
+      const wrapper = wrapperRef.current;
+      const container = containerRef.current;
 
-    const handleWheel = (e) => {
-      if (e.deltaY === 0) return;
+      if (wrapper && container) {
+        const rect = wrapper.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
 
-      const rect = wrapper.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
+        // Kitna total scroll ho sakta hai
+        const scrollableDistance = rect.height - windowHeight;
+        
+        // Negative top value gives exact scrolled amount
+        const scrolled = -rect.top;
 
-      const galleryIsActive =
-        rect.top <= 1 &&
-        rect.bottom >= viewportHeight - 1;
+        // Progress clamp between 0 to 1
+        let progress = scrolled / scrollableDistance;
+        if (progress < 0) progress = 0;
+        if (progress > 1) progress = 1;
 
-      if (!galleryIsActive) return;
-
-      const maxScrollLeft =
-        container.scrollWidth - container.clientWidth;
-
-      if (maxScrollLeft <= 0) return;
-
-      const currentScroll = container.scrollLeft;
-
-      const goingDown = e.deltaY > 0;
-      const goingUp = e.deltaY < 0;
-
-      const atStart = currentScroll <= 1;
-      const atEnd = currentScroll >= maxScrollLeft - 1;
-
-      if (goingDown) {
-        if (!atEnd) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          const movement = e.deltaY * 0.45;
-          const nextPosition = Math.min(
-            currentScroll + movement,
-            maxScrollLeft
-          );
-
-          container.scrollLeft = nextPosition;
-          return;
-        }
-        return;
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        container.scrollLeft = maxScrollLeft * progress;
       }
 
-      if (goingUp) {
-        if (!atStart) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          const movement = Math.abs(e.deltaY) * 0.45;
-          const nextPosition = Math.max(
-            currentScroll - movement,
-            0
-          );
-
-          container.scrollLeft = nextPosition;
-          return;
-        }
-        return;
-      }
+      animationFrameId = requestAnimationFrame(syncScroll);
     };
 
-    window.addEventListener("wheel", handleWheel, {
-      passive: false,
-      capture: true,
-    });
+    // Start loop
+    animationFrameId = requestAnimationFrame(syncScroll);
 
     return () => {
-      window.removeEventListener("wheel", handleWheel, {
-        capture: true,
-      });
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
@@ -219,19 +179,15 @@ const Gallery = () => {
           .scroll-animations-example {
             width: 100%;
             height: 100%;
-            overflow-x: hidden;
-            overflow-y: hidden;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            overscroll-behavior: contain;
+            overflow: hidden;
           }
 
           .scrollsection {
             padding: 0 10vh 0 15vmax;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             height: 100%;
+            width: max-content; /* Ensures child width expands for scrolling */
           }
 
           .item {
@@ -360,7 +316,7 @@ const Gallery = () => {
                   <img
                     className={`image ${activeClass}`}
                     src={item.src}
-                    alt={`Bahrain Surf Park gallery ${index + 1}`}
+                    alt={`Gallery Image ${index + 1}`}
                     loading={index < 6 ? "eager" : "lazy"}
                     draggable="false"
                     onClick={() => handleImageClick(item.id)}

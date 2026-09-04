@@ -24,27 +24,9 @@ const Events = () => {
   return (
     <section
       id="events"
-      className="bg-[#004658] py-24 px-5 sm:px-8 text-white font-outfit relative overflow-hidden"
+      // Added the dark blue color from your image
+      className="bg-[#112E44] py-24 px-5 sm:px-8 text-white font-outfit relative overflow-hidden"
     >
-      {/* Background 3D Surf Park Image with proper opacity and visibility */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        <motion.div
-          initial={{ scale: 1.1, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 0.65 }}
-          viewport={{ once: false }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="w-full h-full"
-        >
-          <img
-            src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1920&q=80"
-            alt="Surf Park Background"
-            className="w-full h-full object-cover filter brightness-90 contrast-105"
-          />
-        </motion.div>
-        {/* Soft gradient overlay to keep text readable while keeping the image clearly visible */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#004658]/70 via-[#004658]/50 to-[#004658]/70" />
-      </div>
-
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -72,7 +54,8 @@ const Events = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="grid md:grid-cols-[180px_1fr_auto] gap-6 items-center py-8 border-b border-[#fffff2]/20 group transition-colors duration-300 hover:bg-[#027b9a]/40 px-4 rounded-lg cursor-pointer backdrop-blur-md bg-[#004658]/30"
+              // Cleaned up hover state to match the solid background
+              className="grid md:grid-cols-[180px_1fr_auto] gap-6 items-center py-8 border-b border-[#fffff2]/20 group transition-colors duration-300 hover:bg-white/5 px-4 rounded-lg cursor-pointer"
             >
               <span className="font-caacupe text-[#00bef0] text-lg tracking-wider">
                 {event.date}
@@ -88,7 +71,7 @@ const Events = () => {
                 </p>
               </div>
 
-              <div className="w-12 h-12 rounded-full border border-[#fffff2]/40 flex items-center justify-center text-[#fffff2] group-hover:bg-[#fffff2] group-hover:text-[#004658] group-hover:border-[#fffff2] transition-all duration-300">
+              <div className="w-12 h-12 rounded-full border border-[#fffff2]/40 flex items-center justify-center text-[#fffff2] group-hover:bg-[#fffff2] group-hover:text-[#112E44] group-hover:border-[#fffff2] transition-all duration-300">
                 <ArrowUpRight size={20} />
               </div>
             </motion.div>
