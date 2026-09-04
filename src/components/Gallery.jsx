@@ -25,7 +25,7 @@ const Gallery = () => {
     },
     {
       id: 4,
-      src: "https://wavegarden.com/wp-content/uploads/2020/06/Wavegarden-Cove.jpg",
+      src: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=85",
       size: "-normal",
     },
     {
@@ -50,7 +50,7 @@ const Gallery = () => {
     },
     {
       id: 9,
-      src: "https://stage2-cdn.urbnsurf.com/2024/12/4gnbBGHm-oSHU8ySX-qIRdDsRr-4Fdt0ZZK-qW0JXlnk-U2mefS7q-Z9QGQsY2-QDKfdqcC-BWe8WwKj-fwWx54MZ-4LWfDB3G-Xkcfeilz-Rafi_Urbnsurf_StevenWoodburn_10-web-800x400.jpeg",
+      src: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1200&q=85",
       size: "-normal -horizontal",
     },
     {
@@ -98,21 +98,8 @@ const Gallery = () => {
       src: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=85",
       size: "-normal -horizontal",
     },
-    {
-      id: 19,
-      src: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=85",
-      size: "-small -horizontal",
-    },
-    {
-      id: 20,
-      src: "https://images.unsplash.com/photo-1530053969600-caed2596d242?auto=format&fit=crop&w=1200&q=85",
-      size: "-normal",
-    },
   ];
 
-  // ==========================================
-  // ACTIVATE IMAGES
-  // ==========================================
   useEffect(() => {
     const timer = setTimeout(() => {
       setImagesActive(true);
@@ -121,9 +108,6 @@ const Gallery = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // ==========================================
-  // HORIZONTAL SCROLL CONTROL
-  // ==========================================
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const container = containerRef.current;
@@ -155,45 +139,37 @@ const Gallery = () => {
       const atStart = currentScroll <= 1;
       const atEnd = currentScroll >= maxScrollLeft - 1;
 
-      // DOWN
       if (goingDown) {
         if (!atEnd) {
           e.preventDefault();
           e.stopPropagation();
 
           const movement = e.deltaY * 0.45;
-
           const nextPosition = Math.min(
             currentScroll + movement,
             maxScrollLeft
           );
 
           container.scrollLeft = nextPosition;
-
           return;
         }
-
         return;
       }
 
-      // UP
       if (goingUp) {
         if (!atStart) {
           e.preventDefault();
           e.stopPropagation();
 
           const movement = Math.abs(e.deltaY) * 0.45;
-
           const nextPosition = Math.max(
             currentScroll - movement,
             0
           );
 
           container.scrollLeft = nextPosition;
-
           return;
         }
-
         return;
       }
     };
@@ -210,9 +186,6 @@ const Gallery = () => {
     };
   }, []);
 
-  // ==========================================
-  // IMAGE CLICK
-  // ==========================================
   const handleImageClick = (id) => {
     setClickedId(id);
     setImagesActive(false);
@@ -227,7 +200,7 @@ const Gallery = () => {
     <div
       ref={wrapperRef}
       style={{
-        height: "350vh",
+        height: "280vh",
         position: "relative",
         background: "#0b2d45",
       }}
@@ -243,11 +216,6 @@ const Gallery = () => {
         }}
       >
         <style>{`
-
-          /* ==========================================
-             MAIN HORIZONTAL GALLERY
-          ========================================== */
-
           .scroll-animations-example {
             width: 100%;
             height: 100%;
@@ -265,10 +233,6 @@ const Gallery = () => {
             align-items: center;
             height: 100%;
           }
-
-          /* ==========================================
-             GALLERY ITEMS
-          ========================================== */
 
           .item {
             display: inline-block;
@@ -299,14 +263,6 @@ const Gallery = () => {
             width: 60vh;
           }
 
-          .item.-normal\\:nth-of-type(3n) {
-            bottom: 5vh;
-          }
-
-          .item.-normal\\:nth-of-type(4n) {
-            bottom: -5vh;
-          }
-
           .item.-small {
             height: 40vh;
             width: 30vh;
@@ -318,168 +274,34 @@ const Gallery = () => {
             width: 40vh;
           }
 
-          .item.-small\\:nth-of-type(3n) {
-            bottom: 13vh;
-          }
-
-          .item.-small\\:nth-of-type(4n) {
-            bottom: -13vh;
-          }
-
-          /* ==========================================
-             IMAGE
-             
-             REAL COLOR
-             NO GRAYSCALE
-             NO HOVER EFFECT
-          ========================================== */
-
           .image {
             height: 100%;
             width: 100%;
             position: absolute;
             top: 0;
             left: 0;
-
             object-fit: cover;
-
-            /* REAL ORIGINAL COLORS */
             filter: none;
-
             opacity: 0;
             pointer-events: none;
-
-            transform:
-              translateX(0)
-              translateY(0)
-              scale(1);
-
-            transition:
-              opacity 1s ease,
-              transform 1s ease;
-
+            transform: translateX(0) translateY(0) scale(1);
+            transition: opacity 1s ease, transform 1s ease;
             cursor: pointer;
           }
 
-          /* ==========================================
-             INITIAL FLY-IN POSITIONS
-          ========================================== */
-
-          .item\\:nth-of-type(4n) .image {
-            transform:
-              translateX(-30vh)
-              translateY(-30vh)
-              scale(0.8);
-          }
-
-          .item\\:nth-of-type(4n - 1) .image {
-            transform:
-              translateX(30vh)
-              translateY(30vh)
-              scale(0.8);
-          }
-
-          .item\\:nth-of-type(4n - 2) .image {
-            transform:
-              translateX(-30vh)
-              translateY(30vh)
-              scale(0.8);
-          }
-
-          .item\\:nth-of-type(4n - 3) .image {
-            transform:
-              translateX(-30vh)
-              translateY(-30vh)
-              scale(0.8);
-          }
-
-          /* ==========================================
-             ACTIVE IMAGE
-          ========================================== */
-
           .image.-active {
-            transform:
-              translateX(0)
-              translateY(0)
-              scale(1) !important;
-
+            transform: translateX(0) translateY(0) scale(1) !important;
             opacity: 1;
-
             pointer-events: auto;
           }
-
-          /* ==========================================
-             CLICK ZOOM
-          ========================================== */
 
           .image.-clicked {
-            transform:
-              translateX(0)
-              translateY(0)
-              scale(5) !important;
-
+            transform: translateX(0) translateY(0) scale(5) !important;
             opacity: 0;
-
             pointer-events: auto;
           }
 
-          /* ==========================================
-             IMPORTANT:
-             NO HOVER CSS HERE
-             
-             Mouse hover will NOT:
-             - change color
-             - remove grayscale
-             - increase opacity
-             - zoom image
-          ========================================== */
-
-          /* ==========================================
-             FAKE UI
-          ========================================== */
-
-          .fake-ui .logo {
-            position: fixed;
-            top: 2vh;
-            left: 2vh;
-            height: 3vh;
-            width: 2.5vh;
-            border: solid 1vh #999;
-            z-index: 10;
-          }
-
-          .fake-ui .nav {
-            position: fixed;
-            top: 2vh;
-            right: 2vh;
-            z-index: 10;
-          }
-
-          .fake-ui .nav .nav-item {
-            background: #999;
-            display: inline-block;
-            height: 2vh;
-            width: 10vh;
-            margin-left: 2vh;
-          }
-
-          .fake-ui .footer {
-            position: fixed;
-            bottom: 3vh;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 2vh;
-            width: 40vh;
-            background: #999;
-            z-index: 10;
-          }
-
-          /* ==========================================
-             MOBILE
-          ========================================== */
-
           @media (max-width: 768px) {
-
             .scrollsection {
               padding-left: 8vw;
               padding-right: 8vw;
@@ -520,17 +342,9 @@ const Gallery = () => {
               width: 35vh;
             }
           }
-
         `}</style>
 
-        {/* ==========================================
-            GALLERY
-        ========================================== */}
-
-        <div
-          className="scroll-animations-example"
-          ref={containerRef}
-        >
+        <div className="scroll-animations-example" ref={containerRef}>
           <div className="scrollsection">
             {imagesData.map((item, index) => {
               let activeClass = "";
@@ -542,40 +356,19 @@ const Gallery = () => {
               }
 
               return (
-                <div
-                  key={item.id}
-                  className={`item ${item.size}`}
-                >
+                <div key={item.id} className={`item ${item.size}`}>
                   <img
                     className={`image ${activeClass}`}
                     src={item.src}
                     alt={`Bahrain Surf Park gallery ${index + 1}`}
                     loading={index < 6 ? "eager" : "lazy"}
                     draggable="false"
-                    onClick={() =>
-                      handleImageClick(item.id)
-                    }
+                    onClick={() => handleImageClick(item.id)}
                   />
                 </div>
               );
             })}
           </div>
-        </div>
-
-        {/* ==========================================
-            FAKE UI
-        ========================================== */}
-
-        <div className="fake-ui">
-          <div className="logo"></div>
-
-          <div className="nav">
-            <span className="nav-item"></span>
-            <span className="nav-item"></span>
-            <span className="nav-item"></span>
-          </div>
-
-          <div className="footer"></div>
         </div>
       </div>
     </div>

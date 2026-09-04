@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import WaveBarLoader from "./wave_loader";
 
 const TOTAL_FRAMES = 240;
 
@@ -11,34 +12,25 @@ const Hero = () => {
   const targetFrameRef = useRef(0);
 
   const rafRef = useRef(null);
-  const scrollRafRef = useRef(null);
 
   const [loadedCount, setLoadedCount] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
 
-  // -----------------------------------------
-  // PRELOAD ALL FRAMES
-  // -----------------------------------------
   useEffect(() => {
     let mounted = true;
-
     const images = new Array(TOTAL_FRAMES);
     let completed = 0;
     let errors = 0;
 
     const loadFrame = (index) => {
       const img = new Image();
-
       img.decoding = "async";
 
       img.onload = () => {
         if (!mounted) return;
-
         images[index] = img;
-
         completed++;
-
         setLoadedCount(completed);
 
         if (completed === TOTAL_FRAMES) {
@@ -48,10 +40,8 @@ const Hero = () => {
 
       img.onerror = () => {
         if (!mounted) return;
-
         errors++;
         completed++;
-
         setLoadedCount(completed);
 
         if (errors === TOTAL_FRAMES) {
@@ -66,10 +56,7 @@ const Hero = () => {
       img.src = `/frames/frame_${String(index + 1).padStart(5, "0")}.png`;
     };
 
-    // Load first frame immediately
     loadFrame(0);
-
-    // Load remaining frames
     for (let i = 1; i < TOTAL_FRAMES; i++) {
       loadFrame(i);
     }
@@ -81,9 +68,6 @@ const Hero = () => {
     };
   }, []);
 
-  // -----------------------------------------
-  // DRAW FRAME
-  // -----------------------------------------
   const drawFrame = (frameIndex) => {
     const canvas = canvasRef.current;
     const frames = framesRef.current;
@@ -91,13 +75,10 @@ const Hero = () => {
     if (!canvas || !frames.length) return;
 
     let index = Math.round(frameIndex);
-
     index = Math.max(0, Math.min(TOTAL_FRAMES - 1, index));
 
     let image = frames[index];
 
-    // If requested frame isn't ready,
-    // find nearest loaded frame
     if (!image || !image.complete || image.naturalWidth === 0) {
       for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
         const previous = index - offset;
@@ -127,8 +108,7 @@ const Hero = () => {
 
     if (!image || image.naturalWidth === 0) return;
 
-    const ctx = canvas.getContext("2d");
-
+    const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
     const width = canvas.clientWidth;
@@ -137,31 +117,21 @@ const Hero = () => {
     if (!width || !height) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
     const canvasWidth = Math.round(width * dpr);
     const canvasHeight = Math.round(height * dpr);
 
-    if (
-      canvas.width !== canvasWidth ||
-      canvas.height !== canvasHeight
-    ) {
+    if (canvas.width !== canvasWidth || canvas.height !== canvasHeight) {
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
     }
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
     ctx.clearRect(0, 0, width, height);
 
     const imageWidth = image.naturalWidth;
     const imageHeight = image.naturalHeight;
 
-    // object-cover calculation
-    const scale = Math.max(
-      width / imageWidth,
-      height / imageHeight
-    );
-
+    const scale = Math.max(width / imageWidth, height / imageHeight);
     const drawWidth = imageWidth * scale;
     const drawHeight = imageHeight * scale;
 
@@ -169,59 +139,31 @@ const Hero = () => {
     const y = (height - drawHeight) / 2;
 
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
+    ctx.imageSmoothingQuality = "medium";
 
-    ctx.drawImage(
-      image,
-      x,
-      y,
-      drawWidth,
-      drawHeight
-    );
+    ctx.drawImage(image, x, y, drawWidth, drawHeight);
   };
 
-  // -----------------------------------------
-  // ANIMATION
-  // -----------------------------------------
-  const animateToTarget = () => {
-    if (rafRef.current) return;
+  useEffect(() => {
+    if (!loaded) return;
 
-    const animate = () => {
+    drawFrame(0);
+
+    const renderLoop = () => {
       const target = targetFrameRef.current;
       const current = currentFrameRef.current;
 
       const difference = target - current;
 
-      // Very small difference
-      if (Math.abs(difference) < 0.15) {
-        currentFrameRef.current = target;
-
-        drawFrame(target);
-
-        rafRef.current = null;
-        return;
+      if (Math.abs(difference) > 0.001) {
+        currentFrameRef.current = current + difference * 0.15;
+        drawFrame(currentFrameRef.current);
       }
 
-      // Smooth but responsive
-      currentFrameRef.current =
-        current + difference * 0.22;
-
-      drawFrame(currentFrameRef.current);
-
-      rafRef.current = requestAnimationFrame(animate);
+      rafRef.current = requestAnimationFrame(renderLoop);
     };
 
-    rafRef.current = requestAnimationFrame(animate);
-  };
-
-  // -----------------------------------------
-  // INITIAL FRAME + RESIZE
-  // -----------------------------------------
-  useEffect(() => {
-    if (!loaded) return;
-
-    // Draw first frame immediately
-    drawFrame(0);
+    rafRef.current = requestAnimationFrame(renderLoop);
 
     const handleResize = () => {
       drawFrame(currentFrameRef.current);
@@ -230,132 +172,68 @@ const Hero = () => {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener(
-        "resize",
-        handleResize
-      );
+      window.removeEventListener("resize", handleResize);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
   }, [loaded]);
 
-  // -----------------------------------------
-  // SCROLL
-  // -----------------------------------------
   useEffect(() => {
     if (!loaded) return;
 
+    let ticking = false;
+
     const handleScroll = () => {
-      if (scrollRafRef.current) return;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const hero = heroRef.current;
+          if (hero) {
+            const rect = hero.getBoundingClientRect();
+            const scrollDistance = hero.offsetHeight - window.innerHeight;
 
-      scrollRafRef.current = requestAnimationFrame(() => {
-        scrollRafRef.current = null;
-
-        const hero = heroRef.current;
-
-        if (!hero) return;
-
-        const rect = hero.getBoundingClientRect();
-
-        const scrollDistance =
-          hero.offsetHeight - window.innerHeight;
-
-        if (scrollDistance <= 0) return;
-
-        let progress =
-          -rect.top / scrollDistance;
-
-        progress = Math.max(
-          0,
-          Math.min(1, progress)
-        );
-
-        targetFrameRef.current =
-          progress * (TOTAL_FRAMES - 1);
-
-        animateToTarget();
-      });
+            if (scrollDistance > 0) {
+              let progress = -rect.top / scrollDistance;
+              progress = Math.max(0, Math.min(1, progress));
+              targetFrameRef.current = progress * (TOTAL_FRAMES - 1);
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      { passive: true }
-    );
-
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
-
-      if (scrollRafRef.current) {
-        cancelAnimationFrame(
-          scrollRafRef.current
-        );
-      }
-
-      if (rafRef.current) {
-        cancelAnimationFrame(
-          rafRef.current
-        );
-      }
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [loaded]);
 
-  // -----------------------------------------
-  // UI
-  // -----------------------------------------
-  const progress =
-    Math.round(
-      (loadedCount / TOTAL_FRAMES) * 100
-    );
+  const progress = Math.round((loadedCount / TOTAL_FRAMES) * 100);
 
   return (
-    <section
-      ref={heroRef}
-      className="relative h-[600vh] w-full bg-white"
-    >
-      <div className="sticky top-0 z-20 h-screen w-full overflow-hidden bg-white">
-
-        {/* LOADING */}
+    <section ref={heroRef} className="relative h-[600vh] w-full bg-white">
+      <div className="sticky top-0 z-25 h-screen w-full overflow-hidden bg-white">
         {!loaded && !loadError && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-white">
-
-            <div className="mb-4 text-lg font-semibold text-[#0077B6]">
-              Loading Surf Frames...
-            </div>
-
-            <div className="h-1.5 w-64 overflow-hidden rounded-full bg-gray-200">
-              <div
-                className="h-full bg-[#0077B6] transition-all duration-150"
-                style={{
-                  width: `${progress}%`,
-                }}
-              />
-            </div>
-
-            <div className="mt-3 text-sm text-gray-500">
-              {loadedCount} / {TOTAL_FRAMES} frames
-            </div>
-          </div>
+          <WaveBarLoader progress={progress} />
         )}
 
-        {/* ERROR */}
         {loadError && (
-          <div className="absolute inset-0 z-30 flex items-center justify-center bg-white px-6 text-center font-semibold text-red-500">
-            Frames load nahi ho rahe.
-            <br />
-            Check karein ki
-            <br />
-            <code className="mx-1">
-              public/frames/
-            </code>
-            mein PNG files hain.
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-white px-6 text-center">
+            <div className="font-semibold text-red-500">
+              <p>Frames load nahi ho rahe.</p>
+              <p className="mt-2">Check karein:</p>
+              <code className="mt-2 inline-block rounded bg-gray-100 px-3 py-1 text-sm text-gray-700">
+                public/frames/
+              </code>
+              <p className="mt-2">mein PNG files hain.</p>
+            </div>
           </div>
         )}
 
-        {/* CANVAS */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 block h-full w-full"
@@ -364,5 +242,7 @@ const Hero = () => {
     </section>
   );
 };
+
+Hero.displayName = "Hero";
 
 export default Hero;
