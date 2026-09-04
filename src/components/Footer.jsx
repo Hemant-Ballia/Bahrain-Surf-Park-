@@ -4,7 +4,6 @@ const Footer = () => {
   const footerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Intersection Observer for scroll animation
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -29,9 +28,6 @@ const Footer = () => {
         ref={footerRef}
         className="relative bg-[#004658] text-white"
       >
-        {/* =====================================================
-            TOP BACKGROUND WAVE
-        ===================================================== */}
         <div className="absolute top-0 left-0 z-10 w-full h-[30px] md:h-[50px] -translate-y-full pointer-events-none">
           <svg
             className="block w-full h-full -scale-y-100"
@@ -46,52 +42,44 @@ const Footer = () => {
           </svg>
         </div>
 
-        {/* =====================================================
-            MAIN FOOTER GRID CONTENT
-        ===================================================== */}
         <div
-          className={`relative max-w-[1230px] mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 transition-all duration-1000 ease-out ${
+          className={`relative max-w-[1230px] mx-auto px-4 md:px-8 pt-14 md:pt-18 pb-12 transition-all duration-1000 ease-out ${
             isVisible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-8"
           }`}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12 lg:mb-0">
+          <div className="mb-8 text-left">
+            <a href="#" className="inline-block">
+              <img
+                src="/Bahrain-Surf-Park-Logo-removebg-preview.png"
+                alt="Bahrain Surf Park"
+                className="h-28 md:h-32 w-auto object-contain -ml-6"
+              />
+            </a>
+          </div>
 
-            {/* COLUMN 1: Logo & Get Started (Pushed slightly up to match wave peak) */}
-            <div className="flex flex-col lg:-mt-12">
-              <div>
-                <a href="#" className="inline-block">
-                  <img
-                    src="/Bahrain-Surf-Park-Logo-removebg-preview.png"
-                    alt="Bahrain Surf Park"
-                    className="h-28 md:h-32 w-auto object-contain -ml-2"
-                  />
-                </a>
-              </div>
-
-              <div className="mt-6">
-                <h2 className="font-caacupe text-[#fffff2] text-[15px] tracking-[0.1em] uppercase mb-3">
-                  Get Started
-                </h2>
-                <ul className="flex flex-col gap-2 font-light">
-                  <li><a href="#" className="text-white hover:text-[#00bef0] transition-colors">Start</a></li>
-                  <li><a href="#" className="text-white hover:text-[#00bef0] transition-colors">Documentation</a></li>
-                  <li><a href="#" className="text-white hover:text-[#00bef0] transition-colors">Installation</a></li>
-                </ul>
-                <a
-                  href="#booking"
-                  className="mt-5 inline-flex items-center justify-center bg-[#00E599] text-slate-900 rounded-[21px] text-[11px] font-bold tracking-[0.12em] uppercase px-[30px] py-[12px] hover:bg-[#fffff2] hover:text-[#004658] transition-all duration-300 hover:-translate-y-1"
-                >
-                  Book Now
-                </a>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-8 mb-12 lg:mb-0 items-start">
+            <div className="flex flex-col text-left">
+              <h2 className="font-caacupe text-[#00E599] text-[15px] tracking-[0.1em] uppercase mb-3">
+                Get Started
+              </h2>
+              <ul className="flex flex-col gap-2 font-light">
+                <li><a href="#" className="text-white hover:text-[#00bef0] transition-colors">Start</a></li>
+                <li><a href="#" className="text-white hover:text-[#00bef0] transition-colors">Documentation</a></li>
+                <li><a href="#" className="text-white hover:text-[#00bef0] transition-colors">Installation</a></li>
+              </ul>
+              <a
+                href="#booking"
+                className="mt-5 inline-flex items-center justify-center bg-[#00E599] text-slate-900 rounded-[21px] text-[11px] font-bold tracking-[0.12em] uppercase px-[30px] py-[12px] hover:bg-[#fffff2] hover:text-[#004658] transition-all duration-300 hover:-translate-y-1"
+              >
+                Book Now
+              </a>
             </div>
 
-            {/* COLUMN 2: Company & Legal (Pushed down to level with Quick Links & Let's Chat) */}
-            <div className="flex flex-col gap-7 lg:mt-16">
+            <div className="flex flex-col gap-7 text-left">
               <div>
-                <h2 className="font-caacupe text-[#fffff2] text-[15px] tracking-[0.1em] uppercase mb-3">
+                <h2 className="font-caacupe text-[#00E599] text-[15px] tracking-[0.1em] uppercase mb-3">
                   Company
                 </h2>
                 <ul className="flex flex-col gap-2 font-light">
@@ -100,9 +88,11 @@ const Footer = () => {
                   <li><a href="#" className="text-white hover:text-[#00bef0] transition-colors">Careers</a></li>
                 </ul>
               </div>
+            </div>
 
+            <div className="flex flex-col gap-7 text-left">
               <div>
-                <h2 className="font-caacupe text-[#fffff2] text-[15px] tracking-[0.1em] uppercase mb-3">
+                <h2 className="font-caacupe text-[#00E599] text-[15px] tracking-[0.1em] uppercase mb-3">
                   Legal
                 </h2>
                 <ul className="flex flex-col gap-2 font-light">
@@ -112,9 +102,8 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* COLUMN 3: Quick Links (Leveled) */}
-            <div className="lg:mt-16">
-              <h2 className="font-caacupe text-[#fffff2] text-[15px] tracking-[0.1em] uppercase mb-3">
+            <div className="text-left">
+              <h2 className="font-caacupe text-[#00E599] text-[15px] tracking-[0.1em] uppercase mb-3">
                 Quick Links
               </h2>
               <ul className="flex flex-col gap-2 font-light">
@@ -127,10 +116,9 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* COLUMN 4: Contact & Socials (Leveled) */}
-            <div className="flex flex-col gap-7 lg:mt-16">
+            <div className="flex flex-col gap-7 text-left">
               <div>
-                <h2 className="font-caacupe text-[#fffff2] text-[15px] tracking-[0.1em] uppercase mb-3">
+                <h2 className="font-caacupe text-[#00E599] text-[15px] tracking-[0.1em] uppercase mb-3">
                   Let's Chat
                 </h2>
                 <p className="text-[#fffff2] mb-4 text-sm font-light">
@@ -145,7 +133,7 @@ const Footer = () => {
               </div>
 
               <div>
-                <h2 className="font-caacupe text-[#fffff2] text-[15px] tracking-[0.1em] uppercase mb-3">
+                <h2 className="font-caacupe text-[#00E599] text-[15px] tracking-[0.1em] uppercase mb-3">
                   You Call Us
                 </h2>
                 <a
@@ -158,9 +146,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* =====================================================
-              BOTTOM RIGHT FLAT SOCIAL ICONS
-          ===================================================== */}
           <div className="md:absolute bottom-0 right-4 md:right-8 flex items-center gap-3">
             <a href="#" aria-label="LinkedIn" className="p-2.5 bg-[#027b9a] rounded-full hover:-translate-y-1 hover:bg-[#00bef0] transition-all duration-300">
               <svg className="w-[18px] h-[18px] fill-[#fffff2]" viewBox="0 0 30 30">
@@ -179,15 +164,12 @@ const Footer = () => {
             </a>
             <a href="#" aria-label="GitHub" className="p-2.5 bg-[#027b9a] rounded-full hover:-translate-y-1 hover:bg-[#00bef0] transition-all duration-300">
               <svg className="w-[18px] h-[18px] fill-[#fffff2]" viewBox="0 0 32 32">
-                <path d="M16 4C9.371094 4 4 9.371094 4 16C4 21.300781 7.4375 25.800781 12.207031 27.386719C12.808594 27.496094 13.027344 27.128906 13.027344 26.808594C13.027344 26.523438 13.015625 25.769531 13.011719 24.769531C9.671875 25.492188 8.96875 23.160156 8.96875 23.160156C8.421875 21.773438 7.636719 21.402344 7.636719 21.402344C6.546875 20.660156 7.71875 20.675781 7.71875 20.675781C8.921875 20.761719 9.554688 21.910156 9.554688 21.910156C10.625 23.746094 12.363281 23.214844 13.046875 22.910156C13.15625 22.132813 13.46875 21.605469 13.808594 21.304688C11.144531 21.003906 8.34375 19.972656 8.34375 15.375C8.34375 14.0625 8.8125 12.992188 9.578125 12.152344C9.457031 11.851563 9.042969 10.628906 9.695313 8.976563C9.695313 8.976563 10.703125 8.65625 12.996094 10.207031C13.953125 9.941406 14.980469 9.808594 16 9.804688C17.019531 9.808594 18.046875 9.941406 19.003906 10.207031C21.296875 8.65625 22.300781 8.976563 22.300781 8.976563C22.957031 10.628813 22.546875 11.851563 22.421875 12.152344C23.191406 12.992188 23.652344 14.062188 23.652344 15.375C23.652344 19.984375 20.847656 20.996094 18.175781 21.296875C18.605469 21.664063 18.988281 22.398438 18.988281 23.515625C18.988281 25.121094 18.976563 26.414063 18.976563 26.808594C18.976563 27.128906 19.191406 27.503906 19.800781 27.386719C24.566406 25.796875 28 21.300781 28 16C28 9.371094 22.628906 4 16 4Z" />
+                <path d="M16 4C9.371094 4 4 9.371094 4 16C4 21.300781 7.4375 25.800781 12.207031 27.386719C12.808594 27.496094 13.027344 27.128906 13.027344 26.808594C13.027344 26.523438 13.015625 25.769531 13.011719 24.769531C9.671875 25.492188 8.96875 23.160156 8.96875 23.160156C8.421875 21.773438 7.636719 21.402344 7.636719 21.402344C6.546875 20.660156 7.71875 20.675781 7.71875 20.675781C8.921875 20.761719 9.554688 21.910156 9.554688 21.910156C10.625 23.746094 12.363281 23.214844 13.046875 22.910156C13.15625 22.132813 13.46875 21.605469 13.808594 21.304688C11.144531 21.003906 8.34375 19.972656 8.34375 15.375C8.34375 14.0625 8.8125 12.992188 9.578125 12.152344C9.457031 11.851563 9.042969 10.628906 9.695313 8.976563C9.695313 8.976563 10.703125 8.65625 12.996094 10.207031C13.953125 9.941406 14.980469 9.808594 16 9.804688C17.019531 9.804688 18.046875 9.941406 19.003906 10.207031C21.296875 8.65625 22.300781 8.976563 22.300781 8.976563C22.957031 10.628813 22.546875 11.851563 22.421875 12.152344C23.191406 12.992188 23.652344 14.062188 23.652344 15.375C23.652344 19.984375 20.847656 20.996094 18.175781 21.296875C18.605469 21.664063 18.988281 23.398438 18.988281 23.515625C18.988281 25.121094 18.976563 26.414063 18.976563 26.808594C18.976563 27.128906 19.191406 27.503906 19.800781 27.386719C24.566406 25.796875 28 21.300781 28 16C28 9.371094 22.628906 4 16 4Z" />
               </svg>
             </a>
           </div>
         </div>
 
-        {/* =====================================================
-            BOTTOM COPYRIGHT BAR
-        ===================================================== */}
         <div className="bg-[#027b9a] text-white py-[13px] px-[20px] text-center w-full">
           <div className="max-w-[1200px] mx-auto">
             <p className="text-[13px] font-light leading-[18px] m-0">
