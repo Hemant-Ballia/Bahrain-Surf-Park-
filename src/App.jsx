@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Navbar from "./components/Navbar";
 import ScrollFlyIn from "./components/ui/hero-section-3";
 import Hero from "./components/Hero";
+import WavegardenTech from "./components/WavegardenTech";
+import ServiceBentoGrid from "./components/ServiceBentoGrid";
 import Intro from "./components/Intro";
 import About from "./sections/About";
 import SurfJourney from "./components/SurfJourney";
@@ -33,6 +35,8 @@ function App() {
 
         <div id="main-content" className={!showWebsite ? "hidden" : "block"}>
           <Hero />
+          <WavegardenTech />
+          <ServiceBentoGrid />
           <Intro />
           <About />
           <SurfJourney />

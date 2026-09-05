@@ -8,15 +8,27 @@
   --color-ocean-blue: #0077B6;
   --color-mint-green: #00E599;
   --color-slate-gray: #475569;
+
+  --text-h1: 56px;
+  --text-h1--line-height: 1.1;
+  --text-h2: 36px;
+  --text-h2--line-height: 1.2;
 }
 
 body {
   font-family: var(--font-body);
   background-color: var(--color-canvas);
   color: var(--color-slate-gray);
+  font-size: 16px;
+  line-height: 1.6;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+}
+
+h1, h2 {
+  color: var(--color-ocean-blue);
+  font-weight: 700;
 }
 
 @media (prefers-reduced-motion: reduce) {
