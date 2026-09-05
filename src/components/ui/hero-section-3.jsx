@@ -157,8 +157,6 @@ const ScrollFlyIn = forwardRef(
             className="absolute inset-0 z-0 h-full w-full object-cover object-center"
           />
 
-          <div className="pointer-events-none absolute inset-0 z-10 bg-black/40" />
-
           <div className="relative z-20 flex flex-col items-center justify-center px-4 pb-[8vh] sm:pb-[10vh] md:pb-16">
             <div 
               ref={btnZoneRef}
